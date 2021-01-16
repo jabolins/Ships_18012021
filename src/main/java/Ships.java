@@ -31,7 +31,6 @@ public class Ships {
         allShips.clear(); // sākam visu no sākuma
         sunkenShip = 0;
 
-
         boolean result = false; // sākotnēji pieņemam ka izveiedot neizdosies
 // piešķiram visiem kuģiem vietu atmiņā un reģistrējam kopējā kuģu masīvā
         for (int i = 0; i < ship4count; i++) {
@@ -95,9 +94,8 @@ public class Ships {
 
     private boolean createOneShip(int shipNr, int fieldSize) {
         boolean result = false; // sākumā pieņemam ka nesanāks
-        int nr; // būs vajadzīgs vēlāk "reģistrējot" occupiedArea
         for (int shipAttemptsNr = 0; shipAttemptsNr < 100 && !result; shipAttemptsNr++) { // mēģinām 100 reizes vai arī līdz rezultāts ir OK
-            int occopiedAreaNr = 0; // būs vajadzīgs vēlāk "reģistrējot" occupiedArea
+            int occupiedAreaNr = 0; // būs vajadzīgs vēlāk "reģistrējot" occupiedArea
 // nosakām kuģa virzienu
             if ((int) (Math.random() * 2 + 1) % 2 == 0) {// šis būs horizontālais
                 int startX = (int) (Math.random() * (fieldSize - allShips.get(shipNr).size)); // lai kuģis "neizietu ārpus laukuma" sākuma
@@ -110,8 +108,8 @@ public class Ships {
                 }
                 for (int i = 0; i < allShips.get(shipNr).size + 2; i++) { // reģistrējam lauciņus apārt kuģim kuros nevar būt citi kuģi
                     for (int j = 0; j < 3; j++) {
-                        allShips.get(shipNr).occupiedArea[occopiedAreaNr] = startX - 1 + i + (startY - 1 + j) * 100;
-                        occopiedAreaNr++;
+                        allShips.get(shipNr).occupiedArea[occupiedAreaNr] = startX - 1 + i + (startY - 1 + j) * 100;
+                        occupiedAreaNr++;
                     }
                 }
             } else { // šis būs vertikālais virziens
@@ -125,8 +123,8 @@ public class Ships {
                 }
                 for (int i = 0; i < allShips.get(shipNr).size + 2; i++) { // reģistrējam lauciņus apārt kuģim kuros nevar būt citi kuģi
                     for (int j = 0; j < 3; j++) {
-                        allShips.get(shipNr).occupiedArea[occopiedAreaNr] = startX - 1 + j + (startY - 1 + i) * 100;
-                        occopiedAreaNr++;
+                        allShips.get(shipNr).occupiedArea[occupiedAreaNr] = startX - 1 + j + (startY - 1 + i) * 100;
+                        occupiedAreaNr++;
                     }
                 }
             }
@@ -142,15 +140,14 @@ public class Ships {
         for (int i : occupiedFields) { // izejam cauri visam masīvam
             for (int j = 0; j < allShips.get(shipNr).size; j++) {
                 if (i == allShips.get(shipNr).area[j]) {
-                    checkShipResult = false;
-                    return checkShipResult; // ja atrodam kaut vienu sakritību, pārtraucam darbu
+                    return false; // ja atrodam kaut vienu sakritību, pārtraucam darbu
                 }
             }
         }
         for (int i = 0; i < allShips.get(shipNr).occupiedArea.length; i++) {
             occupiedFields.add(allShips.get(shipNr).occupiedArea[i]); // ja izveidošana bija veiksmīga, pievienojam aizņemto lauciņu sarakstam jaunu sarakstu
         }
-        return checkShipResult; // ja nevienu skaritību neatrada tad atgriež sākotnēji paredzēto vērtību true
+        return true; // ja nevienu skaritību neatrada tad atgriež sākotnēji paredzēto vērtību true
     } // Metode lai pārbaudītu vai laukums kurā gatavojamies izvietot kuģi jau nav aizņemts
 
     public String shotTest(int shotField) {

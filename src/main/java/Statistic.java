@@ -6,14 +6,12 @@ public class Statistic {
 
     public boolean newShotStatisticCheck(int shot) { // te pārbaudīsim vai tāds šāviens ja nav bijis.
         // Tas vajadzīgs lai uzskaitītu tikai unikālos šāvienus
-        boolean result = true;
         for (int i : allShots) {
             if (i == shot) {
-                result = false;
-                return result;
+                return false;
             }
         }
         allShots.add(shot);
-        return result;
+        return true;
     } // pārbaudām vai šāds šāviens jau nav bijis un atgriežam vai nu true ja viss labi vai false ja nav la
 }
