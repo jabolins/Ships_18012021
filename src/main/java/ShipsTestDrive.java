@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ShipsTestDrive {
@@ -16,13 +17,19 @@ public class ShipsTestDrive {
             System.out.println();
         }
 
+        Statistic savienuStatistika = new Statistic();
+        savienuStatistika.allShots= new ArrayList<>();
         String savienaRezultats = ""; // lai būtu String jau kaut kāda vērtība
         while (!savienaRezultats.equals("beigas")) {
             Scanner ievade = new Scanner(System.in);
             System.out.println("ievadiet šāvienu");
             int saviens = ievade.nextInt();
-            savienaRezultats = ship.shotTest(saviens);
-            System.out.println(savienaRezultats);
+            if (savienuStatistika.newShotStatisticCheck(saviens)) { // pārbaudām vai šāds šāviens jau nav bijis
+                savienaRezultats = ship.shotTest(saviens);
+                System.out.println(savienaRezultats);
+            } else {
+                System.out.println("šāds šaviens jau bija");
+            }
         }
     }
 }
