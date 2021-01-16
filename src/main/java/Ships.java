@@ -23,12 +23,14 @@ public class Ships {
     }
 
     private static ArrayList<Integer> occupiedFields = new ArrayList<>(); // vieta kur reģistrēsim visu kuģu aizņemtās platības
-
+    private static int sunkenShip; // izmantosim lai skaitītu nogrimušos kuģus
 
     public boolean createAllShips(int gameFieldSize, int ship4count,
                                   int ship3count, int ship2count, int ship1count) {//
 
         allShips.clear(); // sākam visu no sākuma
+        sunkenShip = 0;
+
 
         boolean result = false; // sākotnēji pieņemam ka izveiedot neizdosies
 // piešķiram visiem kuģiem vietu atmiņā un reģistrējam kopējā kuģu masīvā
@@ -137,7 +139,7 @@ public class Ships {
 
     private boolean checkShip(int shipNr) {
         boolean checkShipResult = true;
-        for (int i:occupiedFields) { // izejam cauri visam masīvam
+        for (int i : occupiedFields) { // izejam cauri visam masīvam
             for (int j = 0; j < allShips.get(shipNr).size; j++) {
                 if (i == allShips.get(shipNr).area[j]) {
                     checkShipResult = false;
@@ -150,4 +152,29 @@ public class Ships {
         }
         return checkShipResult; // ja nevienu skaritību neatrada tad atgriež sākotnēji paredzēto vērtību true
     } // Metode lai pārbaudītu vai laukums kurā gatavojamies izvietot kuģi jau nav aizņemts
+
+    public String shotTest(int shotField) {
+        String result = "garām"; // sākumā pieņemam ka ir garām
+        for (int i = 0; i < allShips.size(); i++) {
+            for (int j = 0; j < allShips.get(i).size; j++) {
+                if (shotField == allShips.get(i).area[j]) { // ja atradām sakritību
+                    allShips.get(i).hitsCount++; // palielinām trāpījumu skaitu
+                    if (allShips.get(i).hitsCount == allShips.get(i).size) {
+                        sunkenShip++;
+                        if (sunkenShip == allShips.size()) { // ja nogremdēto kuģu skaits ir vienāds ar visu kuģu skaitu- paziņojam ka viss beidies
+                            result = "beigas";
+                            return result;
+                        } else {
+                            result = "grimst";
+                            return result;
+                        }
+                    } else {
+                        result = "trāpīts";
+                        return result;
+                    }
+                }
+            }
+        }
+        return result;
+    } // pārbauda šāviena vietu un atgriež vērtību- garām, trāpīts, grimst, beigas
 }
