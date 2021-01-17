@@ -43,7 +43,7 @@ public class DbManagement {
         }
         dbConnection.close();
         return false;
-    } // metode lai pārbaudītu vai šāds vārds jau datu bāzē nav reģistrēts
+    } // metode lai pārbaudītu vai šāds vārds jau datu bāzē nav reģistrēts. true- reģistrēts, false- nav reģistrēts
 
     public boolean checkUser(String userName, String password) throws SQLException {
         String query = "SELECT * FROM " + Constants.TABLE_USERS + " WHERE " + Constants.USER_NAME + " =? AND " +

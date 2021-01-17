@@ -1,5 +1,6 @@
 package controllers;
 
+import dbManegment.DbManagement;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,6 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Locale;
 
 public class FirstPageController {
 
@@ -29,10 +32,14 @@ public class FirstPageController {
     void initialize() {
 
         butLogin.setOnAction(event -> {
-
-            checkLogin();
-            butLogin.getScene().getWindow().hide();
-            goToPage("/GamePage.fxml");
+            try {
+                if (checkLogin()) { // pārbaudām vai šāds lietotājs un parole ir reģistrēti
+                    butLogin.getScene().getWindow().hide();
+                    goToPage("/GamePage.fxml");
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         });
 
         butReg.setOnAction(event -> {
@@ -57,7 +64,21 @@ public class FirstPageController {
         stage.show();
     }
 
-    private boolean checkLogin() {
+    private boolean checkLogin() throws SQLException {
+        String user = txtName.getText().trim();
+        String password = txtPass.getText().trim();
+        if (!user.equals("") && !password.equals("")) { // pārbaudām vai ir aizpildīti abi lauki
+            DbManagement dbManagement = new DbManagement();
+            if (dbManagement.checkUser(user, password)) {
+                return true;
+            } else {
+                System.out.println("nepareiza parole vai lietotājs");// šis jāpapildina ar lauku robežu iekrāsošanu un izlecošo logu
+                return false;
+            }
+
+        } else { // ja kāds no laukiem nav aizpildīts
+            System.out.println("ierakstiet vārdu un paroli");// šis jāpapildina ar lauku robežu nokrāsošanu sarkanu un izlecošo logu
+        }
         return false;
     }
 }
