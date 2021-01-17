@@ -136,7 +136,6 @@ public class Ships {
     // atdodam rezultātu tas ir iespējams vai nē. Izmantosim arī metodi CheckShip
 
     private boolean checkShip(int shipNr) {
-        boolean checkShipResult = true;
         for (int i : occupiedFields) { // izejam cauri visam masīvam
             for (int j = 0; j < allShips.get(shipNr).size; j++) {
                 if (i == allShips.get(shipNr).area[j]) {
