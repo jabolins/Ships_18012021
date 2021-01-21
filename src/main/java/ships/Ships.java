@@ -1,3 +1,5 @@
+package ships;
+
 import java.util.ArrayList;
 
 public class Ships {
@@ -149,7 +151,7 @@ public class Ships {
         return true; // ja nevienu skaritību neatrada tad atgriež sākotnēji paredzēto vērtību true
     } // Metode lai pārbaudītu vai laukums kurā gatavojamies izvietot kuģi jau nav aizņemts
 
-    public String shotTest(int shotField) {
+    public static String shotTest(int shotField) {
         String result = "garām"; // sākumā pieņemam ka ir garām
         for (int i = 0; i < allShips.size(); i++) {
             for (int j = 0; j < allShips.get(i).size; j++) {
@@ -173,4 +175,15 @@ public class Ships {
         }
         return result;
     } // pārbauda šāviena vietu un atgriež vērtību- garām, trāpīts, grimst, beigas
+
+    public static int findShip(int shot) {
+        for (int i = 0; i < allShips.size(); i++) {
+            for (int j = 0; j < allShips.get(i).size; j++) {
+                if (shot == allShips.get(i).area[j]) { // ja atradām sakritību
+                    return i;
+                }
+            }
+        }
+return -1;
+    }
 }

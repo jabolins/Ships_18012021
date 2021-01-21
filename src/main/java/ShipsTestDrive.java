@@ -1,3 +1,5 @@
+import ships.Ships;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,8 +19,8 @@ public class ShipsTestDrive {
             System.out.println();
         }
 
-        Statistic savienuStatistika = new Statistic();
-        savienuStatistika.allShots= new ArrayList<>();
+        statistic.Statistic savienuStatistika = new statistic.Statistic();
+        //savienuStatistika.setAllShots()= new ArrayList<>(); // kaut kas nav kārtība
         String savienaRezultats = ""; // lai būtu String jau kaut kāda vērtība
         while (!savienaRezultats.equals("beigas")) {
             Scanner ievade = new Scanner(System.in);

@@ -27,6 +27,22 @@ public class DbManagement {
         }
     } // metode lai pievienotu jaunu spēlētāju
 
+    public void gameResultRegistration(String user, int gameCode, int result){
+        String input = "INSERT INTO " + Constants.TABLE_RESULTS + "(" + Constants.RESULT_USER + ","
+                + Constants.RESULT_GAMECODE + "," + Constants.RESULT_RESULT + ")" + " VALUES(?,?,?)";
+        try {
+            PreparedStatement inputValues = getDbConnection().prepareStatement(input);
+            inputValues.setString(1, user);
+            inputValues.setInt(2, gameCode);
+            inputValues.setInt(3, result);
+
+            inputValues.executeUpdate();
+            dbConnection.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public boolean checkUserName(String userName) throws SQLException {
         String query = "SELECT * FROM " + Constants.TABLE_USERS + " WHERE " + Constants.USER_NAME + " = " + "'" + userName + "'";
         try {

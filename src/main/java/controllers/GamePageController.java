@@ -1,18 +1,29 @@
 package controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import ships.Ships;
+import statistic.Statistic;
+import sun.applet.Main;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
 
 public class GamePageController {
+
+    ArrayList<Button> allButtons = new ArrayList<>(); // izmantosim lai reģistrētu visas pogas
 
     @FXML
     private Button butHome;
@@ -27,29 +38,194 @@ public class GamePageController {
     private Button butStart;
 
     @FXML
-    private AnchorPane gameField;
+    private AnchorPane gameFieldBase;
+
+    @FXML
+    private Spinner<String> spinShipField;
+
+    @FXML
+    private Spinner<Integer> spinShip4;
+
+    @FXML
+    private Spinner<Integer> spinShip3;
+
+    @FXML
+    private Spinner<Integer> spinShip2;
+    @FXML
+    private Spinner<Integer> spinShip1;
 
     @FXML
     void initialize() {
+        Ships ship = new Ships();
+        createSpinners();// sagatavoja visus "spinnerus"
 
         butHome.setOnAction(event -> {
             butHome.getScene().getWindow().hide();
             goToPage("/FirstPage.fxml");
-        });
+        }); // atgriežas uz sākuma lapu ja nospiež pogu Home
 
+        butStart.setOnAction(event -> {
+
+            int ship4count = spinShip4.getValue();
+            int ship3count = spinShip3.getValue();
+            int ship2count = spinShip2.getValue();
+            int ship1count = spinShip1.getValue();
+            int fieldSize;
+            switch (spinShipField.getValue()) {
+                case "11x11":
+                    fieldSize = 11;
+                    break;
+                case "12x12":
+                    fieldSize = 12;
+                    break;
+                case "13x13":
+                    fieldSize = 13;
+                    break;
+                case "14x14":
+                    fieldSize = 14;
+                    break;
+                case "15x15":
+                    fieldSize = 15;
+                    break;
+                case "16x16":
+                    fieldSize = 16;
+                    break;
+                case "17x17":
+                    fieldSize = 16;
+                    break;
+                case "18x18":
+                    fieldSize = 16;
+                    break;
+                case "19x19":
+                    fieldSize = 16;
+                    break;
+                case "20x20":
+                    fieldSize = 16;
+                    break;
+                default:
+                    fieldSize = 10;
+            }
+                    Statistic.fixGameDate(fieldSize, ship4count,ship3count,ship2count,ship1count); // šis ir jāpārnes zemāk. citādi nestrādā
+            if (!ship.createAllShips(fieldSize, ship4count, ship3count, ship2count, ship1count)) {
+                txtInformation.setText("šādi izvietot kuģus nav iespējams");
+                System.out.println("šādi izvietot kuģus nav iespējams"); // šis vēlāk jāaizvieto ar paziņojumu spēlētājam
+            } else {
+                System.out.println(fieldSize);
+                createField(fieldSize);
+            }
+        });
     }
 
+
+    private void createField(int size) {
+        allButtons.clear();// sākam visu no sākuma
+        GridPane gameField = new GridPane();
+        gameField.relocate(0, 0);
+        gameField.setHgap(2);
+        gameField.setVgap(2);
+        gameFieldBase.getChildren().add(gameField);
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                Button button = new Button();
+                allButtons.add(button);
+                button.setPrefSize(250 / size, 100 / size); // veidojam dinamiskus lauciņu izmērus. varbūt vēlāk atteiksimies bet pagaidām lai ir
+                button.setStyle("-fx-background-color: #0648F9");
+                int buttName = y * 100 + x; // mainīgais pogai kas būs arī pogas vārds
+                button.setId(String.valueOf(buttName));
+                button.setOnAction(event -> {
+                    pressButton(button);
+                });
+                gameField.add(button, x, y);
+            }
+        }
+    } // izveidojam atbilstoša izmēra laukumu, saliekam uz tā "pogas/lauciņus"
+
+    private void pressButton(Button button) {// te aprakstīts kas notiks kad nospiedīs "kuģu lauciņu"
+        int ShipNr; // būs vajadzīgs vēlāk meklējot konkrēto kuģi pie case "beigas" un case "grimst"
+
+        if (Statistic.newShotStatisticCheck((Integer.parseInt(button.getId()))) == false) {// ja tāds šāviens jau bija, neko nedarām
+            txtInformation.setText("šāds šāviens jau bija");
+        } else {// ja šāds šāviens nav bijis
+            switch (Ships.shotTest(Integer.parseInt(button.getId()))) { // pārbaudām "šāviena"rezultātu
+                case "garām":
+                    txtInformation.setText("garām");
+                    button.setStyle("-fx-background-color: #F9E706");
+                    break;
+                case "trāpīts":
+                    txtInformation.setText("trāpīts");
+                    button.setStyle("-fx-background-color: #FB2816");
+                    break;
+                case "beigas":
+                    txtInformation.setText("jūs uzvarējāt. Veikti "+ Statistic.getAllShots().size()+ " šāvieni" );
+                    ShipNr = Ships.findShip(Integer.parseInt(button.getId())); // dabūjam nogrimušā kuģa kārtas NR masīvā
+                    for (int buttNr = 0; buttNr < allButtons.size(); buttNr++) { // nokrāsojam visas pogas kas "piederēja" šim kuģim
+                        for (int shipAreaNr = 0; shipAreaNr < Ships.getAllShips().get(ShipNr).getSize(); shipAreaNr++) {
+                            if (Ships.getAllShips().get(ShipNr).getArea()[shipAreaNr] == Integer.parseInt(allButtons.get(buttNr).getId())) {// ja sašautā kuģa lauciņš sakrīt ar pogas nosaukumu
+                                allButtons.get(buttNr).setStyle("-fx-background-color: #050100");
+                            }
+                        }
+                    }
+                    System.out.println("spēlētājs bija"+ Statistic.getGamer()+ " spēles kods bija"+ Statistic.getGameCode()); // šis ir pārbaudei. vēlāk jāizdzēš
+                    break;
+                case "grimst": {
+                    txtInformation.setText("grimst");
+                    System.out.println("grimst");
+                   ShipNr = Ships.findShip(Integer.parseInt(button.getId()));// dabūjam nogrimušā kuģa kārtas NR masīvā
+                    for (int buttNr = 0; buttNr < allButtons.size(); buttNr++) {// nokrāsojam visas pogas kas "piederēja" šim kuģim
+                        for (int shipAreaNr = 0; shipAreaNr < Ships.getAllShips().get(ShipNr).getSize(); shipAreaNr++) {
+                            if (Ships.getAllShips().get(ShipNr).getArea()[shipAreaNr] == Integer.parseInt(allButtons.get(buttNr).getId())) {// ja sašautā kuģa lauciņš sakrīt ar pogas nosaukumu
+                                allButtons.get(buttNr).setStyle("-fx-background-color: #050100");
+                            }
+                        }
+                    }
+                }
+                registerGameResult(); // aizpildām datus par spēles rezultātu
+                break;
+            }
+        }
+    }
+
+
+
+    private void createSpinners() {
+        SpinnerValueFactory<Integer> valueFactory1 =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 4);// spinneru vērtību noteikšanai
+        spinShip1.setValueFactory(valueFactory1);
+        SpinnerValueFactory<Integer> valueFactory2 =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 3);// spinneru vērtību noteikšanai
+        spinShip2.setValueFactory(valueFactory2);
+        SpinnerValueFactory<Integer> valueFactory3 =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 2);// spinneru vērtību noteikšanai
+        spinShip3.setValueFactory(valueFactory3);
+        SpinnerValueFactory<Integer> valueFactory4 =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);// spinneru vērtību noteikšanai
+        spinShip4.setValueFactory(valueFactory4);
+
+        ObservableList<String> fieldSizeValues = FXCollections.observableArrayList("10x10", "11x11",
+                "12x12", "13x13", "14x14", "15x15", "16x16", "17x17", "18x18", "19x19", "20x20");
+
+        SpinnerValueFactory<String> fieldSize = new SpinnerValueFactory.ListSpinnerValueFactory<String>(fieldSizeValues);
+        fieldSize.setValue("10x10");// pamata vērtība
+        spinShipField.setValueFactory(fieldSize);
+    } // saliek visas vērtības izvēles logiem
+
     private void goToPage(String page) {
-        FXMLLoader load= new FXMLLoader();
+        FXMLLoader load = new FXMLLoader();
         load.setLocation(getClass().getResource(page));
         try {
             load.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Parent run =load.getRoot();
-        Stage stage= new Stage();
+        Parent run = load.getRoot();
+        Stage stage = new Stage();
         stage.setScene(new Scene(run));
         stage.show();
+    }// nodrošina pāreju uz lapu
+
+    private void registerGameResult() {
+
     }
+
 }

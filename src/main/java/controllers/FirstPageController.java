@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import statistic.Statistic;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -34,6 +35,7 @@ public class FirstPageController {
         butLogin.setOnAction(event -> {
             try {
                 if (checkLogin()) { // pārbaudām vai šāds lietotājs un parole ir reģistrēti
+                    Statistic.setGamer(txtName.getText()); // piefiksējam spēlētāju kas ir ielogojies
                     butLogin.getScene().getWindow().hide();
                     goToPage("/GamePage.fxml");
                 }
