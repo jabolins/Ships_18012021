@@ -1,25 +1,25 @@
-import ships.Ships;
+import gameStatistic.GameStatistic;
+import playground.Playground;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ShipsTestDrive {
     public static void main(String[] args) {
 
-        Ships ship = new Ships();
+        Playground ship = new Playground();
         boolean izveidesRezultats;
         izveidesRezultats = ship.createAllShips(10, 1, 1, 1, 1);
         System.out.println("izveides rezultāts ir " + izveidesRezultats);
 
-        for (int i = 0; i < Ships.getAllShips().size(); i++) { // izdrukājam visus kuģus
+        for (int i = 0; i < Playground.getAllShips().size(); i++) { // izdrukājam visus kuģus
             System.out.print("Kuģa " + i + " vietas ir: ");
-            for (int j = 0; j < Ships.getAllShips().get(i).getSize(); j++) {
-                System.out.print(Ships.getAllShips().get(i).getArea()[j] + "; ");
+            for (int j = 0; j < Playground.getAllShips().get(i).getShipSize(); j++) {
+                System.out.print(Playground.getAllShips().get(i).getShipFields()[j] + "; ");
             }
             System.out.println();
         }
 
-        statistic.Statistic savienuStatistika = new statistic.Statistic();
+        GameStatistic savienuStatistika = new GameStatistic();
         //savienuStatistika.setAllShots()= new ArrayList<>(); // kaut kas nav kārtība
         String savienaRezultats = ""; // lai būtu String jau kaut kāda vērtība
         while (!savienaRezultats.equals("beigas")) {
