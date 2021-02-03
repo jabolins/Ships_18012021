@@ -1,8 +1,11 @@
 package playground;
 
+import interfaces.GameManagment;
+
 import java.util.ArrayList;
 
-public class Playground {
+public class Playground implements GameManagment {
+
     private int playgroundSize;
     private int numberOfSize1Ships;
     private int numberOfSize2ships;
@@ -12,15 +15,20 @@ public class Playground {
     private int numberOfSunkenShip;
     private final ArrayList<Integer> occupiedFields = new ArrayList<>();
 
+    public Playground() {
+
+    }
+
     public ArrayList<Ship> getAllShips() {
         return allShips;
     }
-
     private ArrayList<Ship> allShips = new ArrayList<>();
 
-
-
-    public Playground(int playgroundSize, int numberOfSize1Ships, int numberOfSize2ships, int numberOfSize3ships, int numberOfSize4ships) {
+    public Playground(int playgroundSize,
+                      int numberOfSize1Ships,
+                      int numberOfSize2ships,
+                      int numberOfSize3ships,
+                      int numberOfSize4ships) {
         this.playgroundSize = playgroundSize;
         this.numberOfSize1Ships = numberOfSize1Ships;
         this.numberOfSize2ships = numberOfSize2ships;
@@ -30,7 +38,12 @@ public class Playground {
 
 
 
-    public boolean createPlayground(Playground playground) {
+    public boolean createPlayground(int playgroundSize,
+                                    int numberOfSize1Ships,
+                                    int numberOfSize2ships,
+                                    int numberOfSize3ships,
+                                    int numberOfSize4ships) {
+        Playground playground= new Playground(playgroundSize, numberOfSize1Ships,numberOfSize2ships,numberOfSize3ships,numberOfSize4ships);
 
         createArrayAllShips(numberOfSize4ships, numberOfSize3ships, numberOfSize2ships, numberOfSize1Ships);
 
@@ -82,8 +95,8 @@ public class Playground {
         }
         return true;
     }
-    private boolean checkOccupiedFields(Ship ship) { // droši vien ir gurdākās metodes kā salīdzināt masīvus. Vēl jāpamācas
-        for (Integer occupiedField : occupiedFields) {
+    private boolean checkOccupiedFields(Ship ship) {
+        for (int occupiedField : occupiedFields) {
             for (int nrOfShipField = 0; nrOfShipField < ship.getSize(); nrOfShipField++) {
                 if (occupiedField == ship.getFields()[nrOfShipField]) {
                     return true;

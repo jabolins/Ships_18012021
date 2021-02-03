@@ -3,7 +3,8 @@ package controllers;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import dbManegment.DbManagement;
+import dbManegment.DatabaseUser;
+import interfaces.DatabaseUserManagment;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -48,13 +49,13 @@ public class RegisterPageController {
         butReg.setOnAction(event -> {
             if (checkFields()) { // ja lauki aizpildīti korekti
                 try {
-                    if (!checkName()) { // ja datu bāzē neatrod tādu lietotāju tad sākam reģistrāciju
+                    if (!checkUsername()) { // ja datu bāzē neatrod tādu lietotāju tad sākam reģistrāciju
 
                         String name = txtName.getText().trim();
                         String password = txtPassword1.getText().trim();
                         String eMail = txtEmail.getText().trim();
-                        DbManagement dbManagement = new DbManagement();
-                        dbManagement.userRegistration(name, password, eMail); // tā bija metode lietotāja reģistrēšanai datu bāzē
+                        DatabaseUserManagment databaseUser = new DatabaseUser();
+                        databaseUser.userRegistration(name, password, eMail); // tā bija metode lietotāja reģistrēšanai datu bāzē
                         System.out.println("lietotājs reģistrēts veiksmīgi."); // šeit jāpapildina ar pogas "sākt spēli" aktivizēšanu
                         butStart.setDisable(false); // aktivizējam pogu Start
                     }
@@ -91,10 +92,10 @@ public class RegisterPageController {
         }
     } // pārbauda vai korekti aizpildīti lauki. Nepārbauda ierakstus datu bāzē, tas vēlāk
 
-    private boolean checkName() throws SQLException {
-        String userName = txtName.getText().trim();
-        DbManagement dbManagement = new DbManagement();
-        if (dbManagement.checkUserName(userName)) { // ja atrod sakritību datu bāzē tad....
+    private boolean checkUsername() throws SQLException {
+        String username = txtName.getText().trim();
+        DatabaseUserManagment databaseUser = new DatabaseUser();
+        if (databaseUser.isUsernameUnique(username)) { // ja atrod sakritību datu bāzē tad....
             System.out.println("šāds lietotājs jau reģistrēts"); // šis jāpapildina ar robežu iekrāsošanu un izlecošo logu
             return true;
         }

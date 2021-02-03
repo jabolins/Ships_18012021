@@ -1,6 +1,8 @@
 package controllers;
 
 
+import dbManegment.DatabaseUser;
+import interfaces.DatabaseUserManagment;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 
-public class FirstPageController{
+public class FirstPageController {
 
     @FXML
     private TextField txtName;
@@ -30,12 +32,12 @@ public class FirstPageController{
 
     @FXML
     void initialize() {
-/*
+
         butLogin.setOnAction(event -> {
            try {
                 if (checkLogin()) { // pārbaudām vai šāds lietotājs un parole ir reģistrēti
 
-                    setGamer(txtName.getText()); // piefiksējam spēlētāju kas ir ielogojies
+                    //setGamer(txtName.getText()); // piefiksējam spēlētāju kas ir ielogojies. Pagaidām neaktīvs
                     butLogin.getScene().getWindow().hide();
                     goToPage("/GamePage.fxml");
                 }
@@ -65,12 +67,13 @@ public class FirstPageController{
         stage.show();
     }
 
-    private boolean checkLogins() throws SQLException {
+    private boolean checkLogin() throws SQLException {
+        DatabaseUserManagment databaseUser= new DatabaseUser();
         String user = txtName.getText().trim();
         String password = txtPass.getText().trim();
-        if (!user.equals("") && !password.equals("")) { // pārbaudām vai ir aizpildīti abi lauki
+        if (!user.equals("") && !password.equals("")) { // pārbaudām vai ir aizpildīti abi lauki te man šķiet jābūt OR nevis AND jāpārbaude
 
-            if (Main.checkLogin(user, password)) {
+            if (databaseUser.checkUserLogin(user, password)) {
                 return true;
             } else {
                 System.out.println("nepareiza parole vai lietotājs");// šis jāpapildina ar lauku robežu iekrāsošanu un izlecošo logu
@@ -82,6 +85,6 @@ public class FirstPageController{
         }
         return false;
     }
-    */
-    }
+
 }
+
