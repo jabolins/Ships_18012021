@@ -11,7 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import playground.Playground;
@@ -40,6 +42,13 @@ public class GamePageController {
 
     @FXML
     private Button butStart;
+
+
+    @FXML
+    private Pane paneGamePane;
+
+    @FXML
+    private BorderPane borderPaneGamePane;
 
     @FXML
     private AnchorPane gameFieldBase;
@@ -77,12 +86,12 @@ public class GamePageController {
                             numberOfSize3ships,
                             numberOfSize4ships);
 
-            if (!playground.createPlaygroundWithShips((Playground) playground)){
+            if (!playground.createPlaygroundWithShips( (Playground) playground)){
                 txtInformation.setText("šādi izvietot kuģus nav iespējams");
             } else {
                 System.out.println(playgroundSize); // tas pārbaudei
                 playground.printAllShips(); // tas pārbaudei
-               createVisualField(playgroundSize);// vēl jālabo
+               createVisualField(playgroundSize, (Playground) playground);// vēl jālabo
             }
         });
     }
@@ -129,47 +138,45 @@ public class GamePageController {
     }
 
 
-    private void createVisualField(int size) {
+    private void createVisualField(int size, Playground playground) {
         allButtons.clear();// sākam visu no sākuma
-        GridPane gameField = new GridPane();
-        gameField.relocate(0, 0);
-        gameField.setHgap(2);
-        gameField.setVgap(2);
-        gameFieldBase.getChildren().add(gameField);
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 Button button = new Button();
                 allButtons.add(button);
-                button.setPrefSize(250 / size, 100 / size); // veidojam dinamiskus lauciņu izmērus. varbūt vēlāk atteiksimies bet pagaidām lai ir
+                button.setPrefSize(25, 20);
+                button.setLayoutX(x*27);
+                button.setLayoutY(y*27);
                 button.setStyle("-fx-background-color: #0648F9");
                 int buttName = y * 100 + x; // mainīgais pogai kas būs arī pogas vārds
                 button.setId(String.valueOf(buttName));
                 button.setOnAction(event -> {
-                    pressButton(button);
+                    pressButton(button, playground);
                 });
-                gameField.add(button, x, y);
+                paneGamePane.getChildren().add(button);
+
             }
         }
     } // izveidojam atbilstoša izmēra laukumu, saliekam uz tā "pogas/lauciņus"
 
-    private void pressButton(Button button) {// te aprakstīts kas notiks kad nospiedīs "kuģu lauciņu"
-//        int ShipNr; // būs vajadzīgs vēlāk meklējot konkrēto kuģi pie case "beigas" un case "grimst"
-//
+    private void pressButton(Button button, Playground playground) {// te aprakstīts kas notiks kad nospiedīs "kuģu lauciņu"
+        int ShipNr; // būs vajadzīgs vēlāk meklējot konkrēto kuģi pie case "beigas" un case "grimst"
+
 //        if (GameStatistic.newShotStatisticCheck((Integer.parseInt(button.getId()))) == false) {// ja tāds šāviens jau bija, neko nedarām
 //            txtInformation.setText("šāds šāviens jau bija");
 //        } else {// ja šāds šāviens nav bijis
-//            switch (Playground.shotTest(Integer.parseInt(button.getId()))) { // pārbaudām "šāviena"rezultātu
-//                case "garām":
-//                    txtInformation.setText("garām");
-//                    button.setStyle("-fx-background-color: #F9E706");
-//                    break;
-//                case "trāpīts":
-//                    txtInformation.setText("trāpīts");
-//                    button.setStyle("-fx-background-color: #FB2816");
-//                    break;
-//                case "beigas":
-//                    txtInformation.setText("jūs uzvarējāt. Veikti " + GameStatistic.getAllShots().size() + " šāvieni");
+            switch (playground.checkShot(Integer.parseInt(button.getId()))) { // pārbaudām "šāviena"rezultātu
+                case "garām":
+                    txtInformation.setText("garām");
+                    button.setStyle("-fx-background-color: #F9E706");
+                    break;
+                case "trāpīts":
+                    txtInformation.setText("trāpīts");
+                    button.setStyle("-fx-background-color: #FB2816");
+                    break;
+                case "beigas":
+                    txtInformation.setText("jūs uzvarējāt. Veikti ");
 //                    ShipNr = Playground.findShip(Integer.parseInt(button.getId())); // dabūjam nogrimušā kuģa kārtas NR masīvā
 //                    for (int buttNr = 0; buttNr < allButtons.size(); buttNr++) { // nokrāsojam visas pogas kas "piederēja" šim kuģim
 //                        for (int shipAreaNr = 0; shipAreaNr < Playground.getAllShips().get(ShipNr).getShipSize(); shipAreaNr++) {
@@ -178,24 +185,20 @@ public class GamePageController {
 //                            }
 //                        }
 //                    }
-//                    System.out.println("spēlētājs bija" + GameStatistic.getGamer() + " spēles kods bija" + GameStatistic.getGameCode()); // šis ir pārbaudei. vēlāk jāizdzēš
-//                    break;
-//                case "grimst": {
-//                    txtInformation.setText("grimst");
-//                    System.out.println("grimst");
+ //                   System.out.println("spēlētājs bija" + GameStatistic.getGamer() + " spēles kods bija" + GameStatistic.getGameCode()); // šis ir pārbaudei. vēlāk jāizdzēš
+                    break;
+                case "grimst": {
+                    txtInformation.setText("grimst");
+                    System.out.println("grimst");
 //                    ShipNr = Playground.findShip(Integer.parseInt(button.getId()));// dabūjam nogrimušā kuģa kārtas NR masīvā
 //                    for (int buttNr = 0; buttNr < allButtons.size(); buttNr++) {// nokrāsojam visas pogas kas "piederēja" šim kuģim
 //                        for (int shipAreaNr = 0; shipAreaNr < Playground.getAllShips().get(ShipNr).getShipSize(); shipAreaNr++) {
 //                            if (Playground.getAllShips().get(ShipNr).getShipFields()[shipAreaNr] == Integer.parseInt(allButtons.get(buttNr).getId())) {// ja sašautā kuģa lauciņš sakrīt ar pogas nosaukumu
 //                                allButtons.get(buttNr).setStyle("-fx-background-color: #050100");
-//                            }
-//                        }
-//                    }
-//                }
-//                registerGameResult(); // aizpildām datus par spēles rezultātu
-//                break;
-//            }
-//        }
+
+                break;
+            }
+        }
     }
 
 
