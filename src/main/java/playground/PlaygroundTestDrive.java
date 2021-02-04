@@ -1,12 +1,14 @@
 package playground;
 
-import interfaces.GameManagment;
-
-import java.util.Scanner;
+import interfaces.GameManagement;
 
 public class PlaygroundTestDrive {
     public static void main(String[] args) {
-//        Playground playground= new Playground(10,4,3,2,1);
+
+
+      GameManagement playground= new Playground(4,4,3,2,1);
+        System.out.println("kuģu izveides rezultātāts ir " + playground.createPlaygroundWithShips((Playground) playground));
+      playground.printAllShips();
 //        GameManagment playground= new Playground();
 //        System.out.println("kuģu izveides rezultāts ir "+ playground.createPlayground(playground));
 //

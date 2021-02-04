@@ -1,10 +1,10 @@
 package playground;
 
-import interfaces.GameManagment;
+import interfaces.GameManagement;
 
 import java.util.ArrayList;
 
-public class Playground implements GameManagment {
+public class Playground implements GameManagement {
 
     private int playgroundSize;
     private int numberOfSize1Ships;
@@ -15,13 +15,10 @@ public class Playground implements GameManagment {
     private int numberOfSunkenShip;
     private final ArrayList<Integer> occupiedFields = new ArrayList<>();
 
-    public Playground() {
-
-    }
-
     public ArrayList<Ship> getAllShips() {
         return allShips;
     }
+
     private ArrayList<Ship> allShips = new ArrayList<>();
 
     public Playground(int playgroundSize,
@@ -37,13 +34,7 @@ public class Playground implements GameManagment {
     }
 
 
-
-    public boolean createPlayground(int playgroundSize,
-                                    int numberOfSize1Ships,
-                                    int numberOfSize2ships,
-                                    int numberOfSize3ships,
-                                    int numberOfSize4ships) {
-        Playground playground= new Playground(playgroundSize, numberOfSize1Ships,numberOfSize2ships,numberOfSize3ships,numberOfSize4ships);
+    public boolean createPlaygroundWithShips(Playground playground) {
 
         createArrayAllShips(numberOfSize4ships, numberOfSize3ships, numberOfSize2ships, numberOfSize1Ships);
 
@@ -55,6 +46,7 @@ public class Playground implements GameManagment {
         }
         return isPossibleCreatePlayground;
     }
+
     private void createArrayAllShips(int size4Ships, int size3Ships, int size2Ships, int size1Ships) {
         for (int i = 0; i < size4Ships; i++) {
             Ship ship = new Ship(4);
@@ -73,6 +65,7 @@ public class Playground implements GameManagment {
             allShips.add(ship);
         }
     }
+
     public boolean createShips(Playground playground) {
 
         for (Ship allShip : allShips) {
@@ -95,6 +88,7 @@ public class Playground implements GameManagment {
         }
         return true;
     }
+
     private boolean checkOccupiedFields(Ship ship) {
         for (int occupiedField : occupiedFields) {
             for (int nrOfShipField = 0; nrOfShipField < ship.getSize(); nrOfShipField++) {
@@ -125,4 +119,15 @@ public class Playground implements GameManagment {
         }
         return "garām";
     }
+
+    public void printAllShips() { // šis ir pārbaudei. vēlāk jāizdzēš
+        System.out.println("sāku metodi printAllShips");
+        for (int i = 0; i < getAllShips().size(); i++) {
+            System.out.println("");
+            System.out.print(" kuģa " + i + " vietas ir:");
+            for (int j = 0; j < getAllShips().get(i).getSize(); j++) {
+                System.out.print(getAllShips().get(i).getFields()[j] + " ;");
+            }
+        }
+    } // šis pārbaudei. vēlāk jāizdzēš
 }

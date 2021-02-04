@@ -16,15 +16,14 @@ public class Ship {
     public int getNumberOfHints() {
         return numberOfHints;
     }
+
     public void setNumberOfHints(int numberOfHints) {
         this.numberOfHints = numberOfHints;
     }
+
     private int size;
     private int[] fields;
     private int[] fieldsAroundShip;
-
-
-
     private int numberOfHints;
 
     Ship(int size) {
@@ -33,7 +32,6 @@ public class Ship {
         fields = new int[size];
         fieldsAroundShip = new int[(size + 2) * 3];
     }
-
 
     public void deployShip(Ship ship, int sizeOfPlayground) {
         String directionOfShip = directionOfShip();
@@ -57,7 +55,6 @@ public class Ship {
             }
         }
         registerFieldsAroundShip(ship, directionOfShip);
-
     }
 
     private void registerFieldsAroundShip(Ship ship, String directionOfShip) {
@@ -81,7 +78,6 @@ public class Ship {
     }
 
     private String directionOfShip() {
-
         if ((int) (Math.random() * 2 + 1) % 2 == 0) {
             return "horizontal";
         } else {
