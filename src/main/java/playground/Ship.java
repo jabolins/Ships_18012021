@@ -1,6 +1,12 @@
 package playground;
 
 public class Ship {
+
+    private int size;
+    private int[] fields;
+    private int[] fieldsAroundShip;
+    private int numberOfHints;
+
     public int getSize() {
         return size;
     }
@@ -21,11 +27,6 @@ public class Ship {
         this.numberOfHints = numberOfHints;
     }
 
-    private int size;
-    private int[] fields;
-    private int[] fieldsAroundShip;
-    private int numberOfHints;
-
     Ship(int size) {
         this.size = size;
         numberOfHints = 0;
@@ -35,26 +36,36 @@ public class Ship {
 
     public void deployShip(Ship ship, int sizeOfPlayground) {
         String directionOfShip = directionOfShip();
+        int startPositionOfShip= startPositionOfShip(directionOfShip, sizeOfPlayground, size);
+        registerShipFields(ship, directionOfShip, startPositionOfShip);
+        registerFieldsAroundShip(ship, directionOfShip);
+    }
+
+    private void registerShipFields(Ship ship, String directionOfShip, int startPositionOfShip) {
         if (directionOfShip.equals("horizontal")) {
-
-            int startPointHorizontal = (int) (Math.random() * (sizeOfPlayground - size));
-            int startPointVertical = (int) (Math.random() * sizeOfPlayground);
-            int startPositionOfShip = startPointHorizontal + startPointVertical * 100;
-
             for (int i = 0; i < ship.size; i++) {
                 ship.fields[i] = startPositionOfShip + i;
             }
         } else {
-
-            int startPointHorizontal = (int) (Math.random() * (sizeOfPlayground));
-            int startPointVertical = (int) (Math.random() * (sizeOfPlayground - size));
-            int startPositionOfShip = startPointHorizontal + startPointVertical * 100;
-
             for (int i = 0; i < ship.size; i++) {
                 ship.fields[i] = startPositionOfShip + i * 100;
             }
         }
-        registerFieldsAroundShip(ship, directionOfShip);
+    }
+
+    public int startPositionOfShip(String directionOfShip, int sizeOfPlayground, int size) {
+        int startPositionOfShip;
+        int startPointVertical;
+        int startPointHorizontal;
+        if (directionOfShip.equals("horizontal")) {
+            startPointHorizontal = (int) (Math.random() * (sizeOfPlayground - size));
+            startPointVertical = (int) (Math.random() * sizeOfPlayground);
+        } else {
+            startPointHorizontal = (int) (Math.random() * (sizeOfPlayground));
+            startPointVertical = (int) (Math.random() * (sizeOfPlayground - size));
+        }
+        startPositionOfShip = startPointHorizontal + startPointVertical * 100;
+        return startPositionOfShip;
     }
 
     private void registerFieldsAroundShip(Ship ship, String directionOfShip) {
@@ -77,7 +88,7 @@ public class Ship {
         }
     }
 
-    private String directionOfShip() {
+    public String directionOfShip() {
         if ((int) (Math.random() * 2 + 1) % 2 == 0) {
             return "horizontal";
         } else {
