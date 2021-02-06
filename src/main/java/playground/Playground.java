@@ -47,7 +47,7 @@ public class Playground implements GameManagement {
         return isPossibleCreatePlayground;
     }
 
-    private void createArrayAllShips(int size4Ships, int size3Ships, int size2Ships, int size1Ships) {
+    public void createArrayAllShips(int size4Ships, int size3Ships, int size2Ships, int size1Ships) {
         for (int i = 0; i < size4Ships; i++) {
             Ship ship = new Ship(4);
             allShips.add(ship);
@@ -89,7 +89,7 @@ public class Playground implements GameManagement {
         return true;
     }
 
-    private boolean checkOccupiedFields(Ship ship) {
+    public boolean checkOccupiedFields(Ship ship) {
         for (int occupiedField : occupiedFields) {
             for (int nrOfShipField = 0; nrOfShipField < ship.getSize(); nrOfShipField++) {
                 if (occupiedField == ship.getFields()[nrOfShipField]) {
@@ -110,7 +110,7 @@ public class Playground implements GameManagement {
                     } else {
                         numberOfSunkenShip++;
                         if (numberOfSunkenShip == allShips.size()) {
-                            return "visi kuģi nogremdēti";
+                            return "beigas";
                         }
                         return "grimst";
                     }
@@ -118,6 +118,18 @@ public class Playground implements GameManagement {
             }
         }
         return "garām";
+    }
+
+    public int[] findShipByFieldNr(int fieldNr) {
+        for (Ship ship : allShips) {
+            for (int fieldOfShip : ship.getFields()) {
+                if (fieldOfShip == fieldNr) {
+                    return ship.getFields();
+                }
+            }
+        }
+        int[] falseRsult = new int[1];
+        return falseRsult;
     }
 
     public void printAllShips() { // šis ir pārbaudei. vēlāk jāizdzēš

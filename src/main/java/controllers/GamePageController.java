@@ -1,6 +1,9 @@
 package controllers;
 
+
+import gameStatistic.GameStatistic;
 import interfaces.GameManagement;
+import interfaces.StatisticManagment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,6 +33,7 @@ public class GamePageController {
     int playgroundSize;
 
     ArrayList<Button> allButtons = new ArrayList<>();
+    StatisticManagment gameStatistic = new GameStatistic();
 
     @FXML
     private Button butHome;
@@ -86,12 +90,11 @@ public class GamePageController {
                             numberOfSize3ships,
                             numberOfSize4ships);
 
-            if (!playground.createPlaygroundWithShips( (Playground) playground)){
+            if (!playground.createPlaygroundWithShips((Playground) playground)) {
                 txtInformation.setText("šādi izvietot kuģus nav iespējams");
             } else {
-                System.out.println(playgroundSize); // tas pārbaudei
                 playground.printAllShips(); // tas pārbaudei
-               createVisualField(playgroundSize, (Playground) playground);// vēl jālabo
+                createVisualField(playgroundSize, (Playground) playground); // vēl jālabo. Man neptīk kā ar interfeisiem sanāk
             }
         });
     }
@@ -137,7 +140,6 @@ public class GamePageController {
         }
     }
 
-
     private void createVisualField(int size, Playground playground) {
         allButtons.clear();// sākam visu no sākuma
 
@@ -146,8 +148,8 @@ public class GamePageController {
                 Button button = new Button();
                 allButtons.add(button);
                 button.setPrefSize(25, 20);
-                button.setLayoutX(x*27);
-                button.setLayoutY(y*27);
+                button.setLayoutX(x * 27);
+                button.setLayoutY(y * 27);
                 button.setStyle("-fx-background-color: #0648F9");
                 int buttName = y * 100 + x; // mainīgais pogai kas būs arī pogas vārds
                 button.setId(String.valueOf(buttName));
@@ -158,49 +160,45 @@ public class GamePageController {
 
             }
         }
-    } // izveidojam atbilstoša izmēra laukumu, saliekam uz tā "pogas/lauciņus"
+    }
 
-    private void pressButton(Button button, Playground playground) {// te aprakstīts kas notiks kad nospiedīs "kuģu lauciņu"
-        int ShipNr; // būs vajadzīgs vēlāk meklējot konkrēto kuģi pie case "beigas" un case "grimst"
-
-//        if (GameStatistic.newShotStatisticCheck((Integer.parseInt(button.getId()))) == false) {// ja tāds šāviens jau bija, neko nedarām
-//            txtInformation.setText("šāds šāviens jau bija");
-//        } else {// ja šāds šāviens nav bijis
-            switch (playground.checkShot(Integer.parseInt(button.getId()))) { // pārbaudām "šāviena"rezultātu
-                case "garām":
+    private void pressButton(Button button, Playground playground) {
+        int shot = Integer.parseInt(button.getId());
+        if (gameStatistic.wasShotAlreadyBeen(shot)) {
+            txtInformation.setText("šāds šāviens jau bija");
+        } else {
+            switch (playground.checkShot(shot)) {
+                case "garām":{
                     txtInformation.setText("garām");
                     button.setStyle("-fx-background-color: #F9E706");
-                    break;
-                case "trāpīts":
+                    break;}
+                case "trāpīts":{
                     txtInformation.setText("trāpīts");
                     button.setStyle("-fx-background-color: #FB2816");
-                    break;
-                case "beigas":
-                    txtInformation.setText("jūs uzvarējāt. Veikti ");
-//                    ShipNr = Playground.findShip(Integer.parseInt(button.getId())); // dabūjam nogrimušā kuģa kārtas NR masīvā
-//                    for (int buttNr = 0; buttNr < allButtons.size(); buttNr++) { // nokrāsojam visas pogas kas "piederēja" šim kuģim
-//                        for (int shipAreaNr = 0; shipAreaNr < Playground.getAllShips().get(ShipNr).getShipSize(); shipAreaNr++) {
-//                            if (Playground.getAllShips().get(ShipNr).getShipFields()[shipAreaNr] == Integer.parseInt(allButtons.get(buttNr).getId())) {// ja sašautā kuģa lauciņš sakrīt ar pogas nosaukumu
-//                                allButtons.get(buttNr).setStyle("-fx-background-color: #050100");
-//                            }
-//                        }
-//                    }
- //                   System.out.println("spēlētājs bija" + GameStatistic.getGamer() + " spēles kods bija" + GameStatistic.getGameCode()); // šis ir pārbaudei. vēlāk jāizdzēš
-                    break;
+                    break;}
                 case "grimst": {
                     txtInformation.setText("grimst");
-                    System.out.println("grimst");
-//                    ShipNr = Playground.findShip(Integer.parseInt(button.getId()));// dabūjam nogrimušā kuģa kārtas NR masīvā
-//                    for (int buttNr = 0; buttNr < allButtons.size(); buttNr++) {// nokrāsojam visas pogas kas "piederēja" šim kuģim
-//                        for (int shipAreaNr = 0; shipAreaNr < Playground.getAllShips().get(ShipNr).getShipSize(); shipAreaNr++) {
-//                            if (Playground.getAllShips().get(ShipNr).getShipFields()[shipAreaNr] == Integer.parseInt(allButtons.get(buttNr).getId())) {// ja sašautā kuģa lauciņš sakrīt ar pogas nosaukumu
-//                                allButtons.get(buttNr).setStyle("-fx-background-color: #050100");
+                    int[] fieldsOfSunkShip = (playground.findShipByFieldNr(shot));
+                    ToColorButtonsSunkenShip(fieldsOfSunkShip);
+                    break;}
+                case "beigas": {
+                    txtInformation.setText("jūs uzvarējāt. Veikti  tik un tik šāvieni"); // vēlāk jāsatais
+                    int[] fieldsOfSunkShip = (playground.findShipByFieldNr(shot));
+                    ToColorButtonsSunkenShip(fieldsOfSunkShip);
+                    break;}
+            }
+            }
+        }
 
-                break;
+    private void ToColorButtonsSunkenShip(int[] fieldsOfSunkShip) {
+        for (int i = 0; i < fieldsOfSunkShip.length; i++) {
+            for (Button checkButton : allButtons) {
+                if (Integer.parseInt(checkButton.getId()) == fieldsOfSunkShip[i]) {
+                    checkButton.setStyle("-fx-background-color: #050100");
+                }
             }
         }
     }
-
 
     private void createAllSpinners() {
         SpinnerValueFactory<Integer> valueFactory1 =
@@ -222,7 +220,7 @@ public class GamePageController {
         SpinnerValueFactory<String> fieldSize = new SpinnerValueFactory.ListSpinnerValueFactory<String>(fieldSizeValues);
         fieldSize.setValue("10x10");// pamata vērtība
         spinShipField.setValueFactory(fieldSize);
-    } // saliek visas vērtības izvēles logiem
+    }
 
     private void goToPage(String page) {
         FXMLLoader load = new FXMLLoader();
@@ -236,10 +234,6 @@ public class GamePageController {
         Stage stage = new Stage();
         stage.setScene(new Scene(run));
         stage.show();
-    }
-
-    private void registerGameResult() {
-
     }
 
 }
