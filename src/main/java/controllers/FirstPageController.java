@@ -71,7 +71,7 @@ public class FirstPageController {
         DatabaseUserManagment databaseUser= new DatabaseUser();
         String user = txtName.getText().trim();
         String password = txtPass.getText().trim();
-        if (!user.equals("") && !password.equals("")) { // pārbaudām vai ir aizpildīti abi lauki te man šķiet jābūt OR nevis AND jāpārbaude
+        if (!user.equals("") && !password.equals("")) {
 
             if (databaseUser.checkUserLogin(user, password)) {
                 return true;

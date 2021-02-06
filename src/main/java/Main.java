@@ -15,10 +15,10 @@ public class Main extends Application {
         primaryStage.setTitle("kuģu kauja");
         primaryStage.setScene(new Scene(root, 800, 500));
         primaryStage.show();
-    } // sākums. Nodefinējam grafisko vidi
+    }
 
     public static void main(String[] args) {
-        launch(args); // palaižam vizuālo logu
+        launch(args);
 
     }
 
